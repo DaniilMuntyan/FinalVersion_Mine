@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Screen Sharing</string>
+    <string name="share_share_your_phone_screen">Share \n(share your phone screen)</string>
+    <string name="watch_watch_someone_s_screen">Watch \n(watch someone\'s screen)</string>
+    <string name="settings_for_developers">Settings \n(for developers)</string>
+    <string name="help_how_to_use_it">Help \n(how to use it)</string>
+    <string name="ip">IP:</string>
+    <string name="port">PORT:</string>
+    <string name="save">Save!</string>
+    <string name="id">ID:</string>
+    <string name="title_activity_watch">ActivityWatch</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="quality_of_broadcasting">Quality of broadcasting:</string>
+    <string name="_1">1</string>
+</resources>

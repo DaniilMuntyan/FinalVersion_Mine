@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.screensharing_finalversionmuntyan.ActivityHelp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:text="First of all, there are two features in this app:
+sharing screen and watching someone sharing screen.
+If you want to share your screen you must press
+the corresponding button on the main screen. After
+starting sharing screen you will get your ID.
+If you want to see someone's screen you must know
+his ID. So, you are suppose to enter it in a proper
+field after pressing the second button on the main
+screen, and press the first button from bottom.
+The settings menu is supposed to be used by a developers,
+who know server's IP and port. Also you can change
+your stream quality to have a better videos."
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            tools:layout_editor_absoluteX="124dp"
+            tools:layout_editor_absoluteY="82dp" />
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
