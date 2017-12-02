@@ -54,56 +54,62 @@ public class ActivitySharing extends Activity {
 
         projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
+        if(PublicStaticObjects.isClicked()) {
+            textID.setText(String.valueOf(PublicStaticObjects.getID()));
+        }
+
         startButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(running) {
-                    return;
-                }
-                running = true;
-                Thread thread = new Thread(new Runnable(){
-                    @Override
-                    public void run() {
-                        try {
-                            PublicStaticObjects.getObjectOutputStream().writeObject(-1);
-                            Object object = PublicStaticObjects.getObjectInputStream().readObject();
-                            id = (Integer) object;
-                        } catch (IOException | ClassNotFoundException e) {
-                            e.printStackTrace();
+                PublicStaticObjects.setStopped(false);
+//                isStopped = false;
+//                if(running) {
+//                    return;
+//                }
+//                running = true;
+                if(!PublicStaticObjects.isWasFirstClick()) {
+                    Thread thread = new Thread(new Runnable(){
+                        @Override
+                        public void run() {
+                            try {
+                                PublicStaticObjects.getObjectOutputStream().writeObject(-1);
+                                Object object = PublicStaticObjects.getObjectInputStream().readObject();
+                                id = (Integer) object;
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
+                    });
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                });
-                thread.start();
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    PublicStaticObjects.setIsClicked(true);
+                    PublicStaticObjects.setID(id);
+                    textID.setText(String.valueOf(id));
+                    startActivityForResult(projectionManager.createScreenCaptureIntent(), 228);
                 }
-                textID.setText(String.valueOf(id));
-                startActivityForResult(projectionManager.createScreenCaptureIntent(), 228);
+                PublicStaticObjects.setWasFirstClick(true);
             }
-
         });
 
         stopButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if(!running) {
-                    return;
-                }
-                running = false;
-                mediaProjection.stop();
-                new Thread(new Runnable() {
+                PublicStaticObjects.setStopped(true);
+//                isStopped = true;
+            /*    new Thread(new Runnable() {
                     @Override
                     public synchronized void run() {
-
                         try {
                             PublicStaticObjects.getObjectOutputStream().writeObject(-2);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                });
+                });*/
             }
         });
     }
@@ -136,7 +142,7 @@ public class ActivitySharing extends Activity {
                 displayWidth=size.x;
 
 
-                imageReader = ImageReader.newInstance(size.x, size.y, PixelFormat.RGBA_8888, 16);
+                imageReader = ImageReader.newInstance(size.x, size.y, PixelFormat.RGBA_8888, 2);
 
                 mediaProjection.createVirtualDisplay("screencap",
                         size.x, size.y, density,
@@ -167,35 +173,45 @@ public class ActivitySharing extends Activity {
         }
     }
     int i = 1;
+    boolean isAlready = false;
+    Bitmap bitmap;
+    Bitmap bit;
+    int pixelStride, rowStride, rowPadding;
     @SuppressLint("NewApi")
     private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
-        Bitmap bitmap;
-        Bitmap bit;
         @Override
         public void onImageAvailable(ImageReader reader) {
+//            if(true) {
+                //       Log.e(",", System.currentTimeMillis() +  " " + currentTime);
+                Image image = null;
+                FileOutputStream fos = null;
+                //  Bitmap bitmap = null;
 
-            //       Log.e(",", System.currentTimeMillis() +  " " + currentTime);
-            Image image = null;
-            FileOutputStream fos = null;
-            //  Bitmap bitmap = null;
-
-            ByteArrayOutputStream stream = null;
-            try {
-                image = imageReader.acquireLatestImage();
-                if (image != null) {
-                    Image.Plane[] planes = image.getPlanes();
-                    ByteBuffer buffer = planes[0].getBuffer();
-                    int pixelStride = planes[0].getPixelStride();
-                    int rowStride = planes[0].getRowStride();
-                    int rowPadding = rowStride - pixelStride * displayWidth;
-                    // create bitmap
-                    bitmap = Bitmap.createBitmap(displayWidth + rowPadding / pixelStride,
-                            displayHeight, Bitmap.Config.ARGB_4444);
-                    bitmap.copyPixelsFromBuffer(buffer);
-                    Log.e("IN AVAILLIST", i++ + "");
-                    bit = bitmap.copy(Bitmap.Config.ARGB_4444, false);
-                //    createImage(bit);
-                    sendImage(bit);
+                ByteArrayOutputStream stream = null;
+                try {
+                    image = imageReader.acquireLatestImage();
+                    if (image != null) {
+                        Image.Plane[] planes = image.getPlanes();
+                        ByteBuffer buffer = planes[0].getBuffer();
+                        if(!isAlready) {
+                            pixelStride = planes[0].getPixelStride();
+                            rowStride = planes[0].getRowStride();
+                            rowPadding = rowStride - pixelStride * displayWidth;
+                        }
+                        bitmap = Bitmap.createBitmap(displayWidth + rowPadding / pixelStride,
+                                displayHeight, Bitmap.Config.ARGB_4444);
+                        bitmap.copyPixelsFromBuffer(buffer);
+           //             Log.e("IN AVAILLIST", i++ + "");
+                        bit = bitmap.copy(Bitmap.Config.ARGB_4444, false);
+                        //   createImage(bit);
+//                        Log.e("WTF", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + isStopped);
+                        if(!PublicStaticObjects.isStopped()) {
+                            sendImage(bit);
+                        }
+                        isAlready = true;
+//                        if(!isStopped) {
+//
+//                        }
                  /*   Thread thread = new Thread(new Runnable() {
                         @Override
                         public synchronized void run() {
@@ -213,39 +229,38 @@ public class ActivitySharing extends Activity {
                     thread.join();*/
 
 
-
-                 //   sendImage(bitmap);
-                }
-
-            } catch (Throwable e) {
-                Log.e("Throwable", e.getMessage());
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
+                        //   sendImage(bitmap);
                     }
-                }
 
-                if (stream != null) {
-                    try {
-                        stream.close();
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
+                } catch (Throwable e) {
+                    Log.e("Throwable", e.getMessage());
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
                     }
-                }
 
-                if (bitmap != null) {
-                    bitmap.recycle();
-                }
+                    if (stream != null) {
+                        try {
+                            stream.close();
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                    }
 
-                if (image != null) {
-                    image.close();
+                    if (bitmap != null) {
+                        bitmap.recycle();
+                    }
+
+                    if (image != null) {
+                        image.close();
+                    }
                 }
             }
-
-        }
+//        }
     }
 
     private byte[] concat(byte[] a, byte[] b) {
@@ -255,30 +270,29 @@ public class ActivitySharing extends Activity {
         return t;
     }
 
+    private synchronized void sendBytes(final byte[] buf) {
+        try {
+            PublicStaticObjects.getObjectOutputStream().writeObject(buf);
+            PublicStaticObjects.getObjectOutputStream().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private synchronized void sendImage(final Bitmap bitmap) {
         Thread thread = new Thread(new Runnable() {
-
-            ByteArrayOutputStream bytes;
-
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             @Override
             public synchronized void run() {
-                bytes = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, PublicStaticObjects.getQuality(), bytes);
-
                 try {
-                 //   PublicStaticObjects.getObjectOutputStream().flush();
-//                    PublicStaticObjects.getObjectOutputStream().reset();
-//                    Log.e("BEFORE SENDING", "" + bytes.toByteArray().length);
                     PublicStaticObjects.getObjectOutputStream().writeObject(bytes.toByteArray());
-//                    Log.e("AFTER SENDING", "" + bytes.toByteArray().length);
                     PublicStaticObjects.getObjectOutputStream().flush();
-//                    PublicStaticObjects.getObjectOutputStream().reset();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
-        thread.setPriority(Thread.MAX_PRIORITY);
         thread.start();
         try {
             thread.join();

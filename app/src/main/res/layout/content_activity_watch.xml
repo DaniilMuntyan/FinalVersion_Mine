@@ -61,8 +61,8 @@
                     android:layout_width="127dp"
                     android:layout_height="400dp"
                     android:layout_margin="15dp"
-                    tools:ignore="ContentDescription"
-                    android:layout_weight="0.89" />
+                    android:layout_weight="0.89"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

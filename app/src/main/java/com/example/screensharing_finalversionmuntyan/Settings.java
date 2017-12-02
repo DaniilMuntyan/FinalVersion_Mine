@@ -50,6 +50,8 @@ public class Settings extends Activity {
         seekBar.incrementProgressBy(1);
         seekBar.setProgress(PublicStaticObjects.getQuality());
 
+        editTextBar.setText(String.valueOf(seekBar.getProgress()));
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

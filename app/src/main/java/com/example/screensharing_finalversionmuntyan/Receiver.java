@@ -31,7 +31,7 @@ public class Receiver implements Runnable {
                 }
             }
             try {
-                byte[] buf = (byte[]) PublicStaticObjects.getObjectInputStream().readObject();
+                byte[] buf = (byte[])PublicStaticObjects.getObjectInputStream().readObject();
                 Bitmap receiveBitmap = BitmapFactory.decodeByteArray(buf, 0, buf.length);
                 PublicStaticObjects.setCount(PublicStaticObjects.getCount()+1);
                 changeImage(receiveBitmap);

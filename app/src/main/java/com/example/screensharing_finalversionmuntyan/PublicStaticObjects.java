@@ -20,6 +20,17 @@ public class PublicStaticObjects {
         PublicStaticObjects.projectionManager = projectionManager;
     }
 
+    public static boolean isClicked() {
+
+        return isClicked;
+    }
+
+    public static void setIsClicked(boolean isClicked) {
+        PublicStaticObjects.isClicked = isClicked;
+    }
+
+    private static boolean isClicked = false;
+
     public static MediaProjectionManager getProjectionManager() {
         return projectionManager;
     }
@@ -36,7 +47,7 @@ public class PublicStaticObjects {
         PublicStaticObjects.quality = quality;
     }
 
-    private static int quality;
+    private static int quality = 1;
 
     private PublicStaticObjects() { }
 
@@ -79,6 +90,16 @@ public class PublicStaticObjects {
         init();
     }
 
+    public static int getID() {
+        return ID;
+    }
+
+    public static void setID(int ID) {
+        PublicStaticObjects.ID = ID;
+    }
+
+    private static int ID;
+
     public static ObjectOutputStream getObjectOutputStream() {
         return objectOutputStream;
     }
@@ -116,6 +137,26 @@ public class PublicStaticObjects {
     public static void setSocket(Socket socket) {
         PublicStaticObjects.socket = socket;
     }
+
+    public static boolean isStopped() {
+        return isStopped;
+    }
+
+    public static void setStopped(boolean stopped) {
+        isStopped = stopped;
+    }
+
+    private static boolean isStopped = false;
+
+    public static boolean isWasFirstClick() {
+        return wasFirstClick;
+    }
+
+    public static void setWasFirstClick(boolean wasFirstClick) {
+        PublicStaticObjects.wasFirstClick = wasFirstClick;
+    }
+
+    private static boolean wasFirstClick = false;
 
     public static void initSocket() {
         if(PublicStaticObjects.getSocket() == null) {

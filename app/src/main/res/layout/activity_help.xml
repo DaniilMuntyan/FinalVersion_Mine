@@ -5,16 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.screensharing_finalversionmuntyan.ActivityHelp">
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:text="First of all, there are two features in this app:
 sharing screen and watching someone sharing screen.
@@ -28,10 +30,10 @@ screen, and press the first button from bottom.
 The settings menu is supposed to be used by a developers,
 who know server's IP and port. Also you can change
 your stream quality to have a better videos."
-            android:textSize="24sp"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            tools:layout_editor_absoluteX="124dp"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="62dp"
             tools:layout_editor_absoluteY="82dp" />
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
